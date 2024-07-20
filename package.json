@@ -1,0 +1,51 @@
+{
+  "name": "electron-typescript-eslint-prettier-vitest",
+  "version": "1.0.0",
+  "description": "Example ESM starter project using Electron, TypeScript, eslint, prettier and vitest",
+  "type": "module",
+  "main": "./build/main.js",
+  "exports": "./build/main.js",
+  "types": "./build/main.d.ts",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.json && npm run copy",
+    "clean": "rimraf build",
+    "copy": "cp -rf ./src/*.html ./build && cp -rf ./src/*.js ./build",
+    "dev": "npm run build && electron .",
+    "dev:static": "serve ./build",
+    "format": "prettier . --write",
+    "lint": "eslint ./**/*.ts",
+    "start": "electron .",
+    "test": "vitest run ./tests"
+  },
+  "author": "kmturley",
+  "license": "MIT",
+  "keywords": [
+    "electron",
+    "typescript",
+    "eslint",
+    "prettier",
+    "vitest"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.2.0",
+    "electron": "^31.2.1",
+    "eslint": "^8.57.0",
+    "globals": "^15.2.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^6.0.1",
+    "serve": "^14.2.3",
+    "tsx": "^4.10.1",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "electron-is-dev": "^3.0.1"
+  }
+}
