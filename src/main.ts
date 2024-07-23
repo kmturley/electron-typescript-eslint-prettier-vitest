@@ -1,11 +1,26 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain, IpcMainEvent } from 'electron';
+import { createServer as createServerHttp } from 'http';
 import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, parse } from 'url';
 import isDev from 'electron-is-dev';
+import createServer from 'next/dist/server/next.js';
+
+// @ts-ignore
+const nextApp = createServer({ dev: isDev, dir: app.getAppPath() + '/renderer' });
+const handle = nextApp.getRequestHandler();
 
 console.log('isDev', isDev);
 
-function createWindow() {
+async function createWindow() {
+  await nextApp.prepare();
+
+  createServerHttp((req: any, res: any) => {
+    const parsedUrl = parse(req.url, true);
+    handle(req, res, parsedUrl);
+  }).listen(3000, () => {
+    console.log('> Ready on http://localhost:3000');
+  });
+
   const win = new BrowserWindow({
     width: isDev ? 1024 + 445 : 1024,
     height: 768,
@@ -14,7 +29,7 @@ function createWindow() {
     },
   });
 
-  win.loadFile('./build/index.html');
+  win.loadURL('http://localhost:3000');
 
   // If developing locally, open developer tools
   if (isDev) {
@@ -25,9 +40,9 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
-  app.on('activate', () => {
+  app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      await createWindow();
     }
   });
 });
@@ -36,4 +51,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+// listen the channel `message` and resend the received message to the renderer process
+ipcMain.on('message', (event: IpcMainEvent, message: any) => {
+  console.log(message);
+  setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
 });

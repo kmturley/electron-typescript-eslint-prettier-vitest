@@ -1,10 +1,12 @@
-window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector);
-    if (element) element.innerText = text;
-  };
+// This file is intentionally .js to prevent it being compiled as an ES module
+const { contextBridge, ipcRenderer } = require('electron/renderer');
 
-  for (const type of ['chrome', 'node', 'electron']) {
-    replaceText(`${type}-version`, process.versions[type] || '');
-  }
-});
+function message(val) {
+  return ipcRenderer.send('message', val);
+}
+
+function onMessage(callback) {
+  return ipcRenderer.on('message', (_event, value) => callback(value));
+}
+
+contextBridge.exposeInMainWorld('electronAPI', { message, onMessage });

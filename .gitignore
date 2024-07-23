@@ -12,6 +12,7 @@ coverage
 # Transpiled files
 build/
 out/
+.next/
 
 # VS Code
 .vscode
