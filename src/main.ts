@@ -32,7 +32,11 @@ async function createWindow() {
     width: isDev ? 1024 + 445 : 1024,
     height: 768,
     webPreferences: {
-      preload: join(dirname(fileURLToPath(import.meta.url)), 'preload.js'),
+      // This file is intentionally .mjs to ensure Electron treats it as an ES module.
+      // Sandbox mode false is required to run ES modules.
+      // https://www.electronjs.org/docs/latest/tutorial/esm
+      sandbox: false,
+      preload: join(dirname(fileURLToPath(import.meta.url)), 'preload.mjs'),
     },
   });
 

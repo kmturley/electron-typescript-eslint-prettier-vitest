@@ -1,5 +1,6 @@
-// This file is intentionally .js to prevent it being compiled as an ES module
-const { contextBridge, ipcRenderer } = require('electron/renderer');
+// This file is intentionally .mjs to ensure Electron treats it as an ES module.
+// https://www.electronjs.org/docs/latest/tutorial/esm
+import { contextBridge, ipcRenderer } from 'electron';
 
 function message(val) {
   return ipcRenderer.send('message', val);

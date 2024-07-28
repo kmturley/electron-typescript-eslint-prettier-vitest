@@ -13,7 +13,7 @@
     "build": "npm run clean && tsc -p tsconfig.json && npm run build-renderer && npm run copy",
     "build-renderer": "next build renderer",
     "clean": "rimraf build renderer/out renderer/.next",
-    "copy": "cp -rf ./src/*.js ./build",
+    "copy": "cp -rf ./src/*.mjs ./build",
     "dev": "npm run build && electron .",
     "dev:next": "next dev ./renderer",
     "dev:static": "serve ./build",
